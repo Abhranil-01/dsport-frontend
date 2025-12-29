@@ -2,7 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQueryWithReauth from "./baseQueryWithReauth";
 import { get } from "http";
 import { create } from "domain";
-import { getCharges } from "./../../../Backend/API/src/controllers/charges.controller";
+
 
 interface GetSubCategoriesArg {
   categoryId: string;
@@ -71,15 +71,14 @@ export const apiSlice = createApi({
       }),
       providesTags: ["User"],
     }),
+logout: builder.mutation<void, void>({
+  query: () => ({
+    url: "users/logout",
+    method: "POST",
+  }),
+  invalidatesTags: ["User"],
+}),
 
-    logout: builder.mutation({
-      query: () => ({
-        url: "users/logout",
-        method: "POST",
-        credentials: "include",
-      }),
-      invalidatesTags: ["User"],
-    }),
 
     getCategories: builder.query<any, void>({
       query: () => ({

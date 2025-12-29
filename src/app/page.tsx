@@ -30,6 +30,7 @@ export default function Home() {
       socket.off("CATEGORY_DELETED", invalidateCategories);
     };
   }, [dispatch]);
+console.log(categories);
 
   return (
     <main className="font-sans bg-linear-to-b from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:to-black">

@@ -77,7 +77,8 @@ export default function AuthPage() {
   /* ---------------- LOGIN ---------------- */
   const onSubmitLogin = async (data: any) => {
     try {
-      await userLogin(data).unwrap();
+     const res= await userLogin(data).unwrap();
+
 
       setUserEmail(data.email);
       setPurpose("login");
@@ -113,7 +114,10 @@ export default function AuthPage() {
         email: userEmail,
         otp,
       }).unwrap();
-
+      console.log(response,"kejfhfhurfe");
+      
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("loggedIn", "true");
       localStorage.setItem("user", JSON.stringify(response.user));
 

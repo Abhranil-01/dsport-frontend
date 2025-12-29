@@ -93,9 +93,12 @@ export function Navbar() {
   useEffect(() => {
     if (user?.loggedIn) {
       localStorage.setItem("loggedIn", "true");
+    
       setIsLoggedIn(true);
     } else {
       localStorage.removeItem("loggedIn");
+      localStorage.removeItem("accesstoken");
+      localStorage.removeItem("refreshtoken");
       setIsLoggedIn(false);
     }
   }, [user]);
