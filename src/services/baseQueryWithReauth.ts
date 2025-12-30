@@ -1,8 +1,13 @@
-import { fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
+import {
+  fetchBaseQuery,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
-  credentials: "include", // optional if also using cookies
+  credentials: "include", // required if backend uses cookies
   prepareHeaders: (headers) => {
     const token =
       typeof window !== "undefined"
@@ -17,50 +22,42 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
-const getErrorStatus = (error: any): number | null => {
-  if (!error) return null;
-  return typeof error.status === "number"
-    ? error.status
-    : error.status === "PARSING_ERROR" && "originalStatus" in error
-    ? error.originalStatus
-    : null;
-};
-const getTokensFromLocalStorage = () => {
-  if (typeof window === "undefined") return {};
-  return {
-    accessToken: localStorage.getItem("accessToken"),
-    refreshToken: localStorage.getItem("refreshToken"),
-  };
-};
-
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-
   let result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
-    const refreshResult = await rawBaseQuery(
+    // Attempt to refresh the token
+    const refreshResult: any = await rawBaseQuery(
       {
         url: "users/refresh-token",
         method: "POST",
+        credentials: "include",
       },
       api,
       extraOptions
     );
 
-    if (refreshResult.data) {
-      // retry original request with new token
-      return rawBaseQuery(args, api, extraOptions);
-    }
+    if (refreshResult.data?.accessToken) {
+      // Save new access token to localStorage
+      localStorage.setItem("accessToken", refreshResult.data.accessToken);
 
-    return { error: { status: 401, data: "Session expired" } };
+      // Retry original request with new token
+      result = await rawBaseQuery(args, api, extraOptions);
+    } else {
+      // Logout user if refresh fails
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      api.dispatch({ type: "user/logout" });
+      return { error: { status: 401, data: "Session expired" } };
+    }
   }
 
   return result;
 };
-
 
 export default baseQueryWithReauth;
