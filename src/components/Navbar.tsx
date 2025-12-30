@@ -106,6 +106,8 @@ export function Navbar() {
   const handleUserLogout = async () => {
     await logout().unwrap();
     localStorage.removeItem("loggedIn");
+    localStorage.removeItem("accesstoken");
+    localStorage.removeItem("refreshtoken");
     setIsLoggedIn(false);
   };
 
