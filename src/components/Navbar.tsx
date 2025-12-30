@@ -97,8 +97,8 @@ export function Navbar() {
       setIsLoggedIn(true);
     } else {
       localStorage.removeItem("loggedIn");
-      localStorage.removeItem("accesstoken");
-      localStorage.removeItem("refreshtoken");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       setIsLoggedIn(false);
     }
   }, [user]);
