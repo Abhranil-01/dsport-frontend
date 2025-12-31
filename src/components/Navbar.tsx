@@ -80,7 +80,8 @@ export function Navbar() {
   } = useGetAddressByIdQuery(addressId || selectedAddressId, {
     skip: !addressId && !selectedAddressId,
   });
-
+  const { data: cartData, refetch } = useGetCartItemsQuery();
+  console.log(cartData?.data?.length);
   /* -------------------- AUTH -------------------- */
   const { data: user } = useGetUserQuery();
   const [logout] = useLogoutMutation();
@@ -104,6 +105,7 @@ export function Navbar() {
 
   const handleUserLogout = async () => {
     const res = await logout().unwrap();
+    refetch()
     localStorage.removeItem("loggedIn");
     setIsLoggedIn(false);
     toast.success("Logged out successfully");
@@ -131,8 +133,7 @@ export function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const { data: cartData } = useGetCartItemsQuery();
-  console.log(cartData?.data?.length);
+
 
   /* -------------------- NAVIGATION -------------------- */
   const goToSubCategory = (item: any) => {

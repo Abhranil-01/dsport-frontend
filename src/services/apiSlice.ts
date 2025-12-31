@@ -74,7 +74,7 @@ export const apiSlice = createApi({
         url: "users/logout",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Cart", "Order", "Address", "Review"],
+      invalidatesTags: ["User"],
     }),
 
     getCategories: builder.query<any, void>({
