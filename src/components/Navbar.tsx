@@ -34,8 +34,9 @@ import {
   useLogoutMutation,
   useGetSubCategoriesQuery,
   useGetCartItemsQuery,
+  apiSlice
 } from "@/services/apiSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -55,7 +56,7 @@ function useDebounce<T>(value: T, delay = 300): T {
 export function Navbar() {
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
-
+ const dispatch = useDispatch(); 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddressContainerOpen, setIsAddressContainerOpen] = useState(false);
@@ -77,10 +78,14 @@ export function Navbar() {
     data: addressById,
     isLoading: isAddressByIdLoading,
     isError: isAddressByIdError,
+    refetch: refetchAddressById,
   } = useGetAddressByIdQuery(addressId || selectedAddressId, {
     skip: !addressId && !selectedAddressId,
   });
-  const { data: cartData, refetch } = useGetCartItemsQuery();
+  const { data: cartData } = useGetCartItemsQuery(undefined, {
+    skip: !isLoggedIn, // ✅ DO NOT FETCH CART WHEN LOGGED OUT
+  });
+
   console.log(cartData?.data?.length);
   /* -------------------- AUTH -------------------- */
   const { data: user } = useGetUserQuery();
@@ -104,15 +109,23 @@ export function Navbar() {
   }, [user]);
 
   const handleUserLogout = async () => {
-    const res = await logout().unwrap();
-    console.log(res);
-    
-    localStorage.removeItem("loggedIn");
-    setIsLoggedIn(false);
-    toast.success("Logged out successfully");
-    router.push("/");
-  };
+    try {
+      await logout().unwrap();
 
+      localStorage.removeItem("user");
+      localStorage.removeItem("loggedIn");
+
+      // 🔥 CLEAR RTK QUERY CACHE (THIS FIXES CART ISSUE)
+      dispatch(apiSlice.util.resetApiState());
+
+      setIsLoggedIn(false);
+
+      toast.success("Logged out successfully");
+      router.push("/");
+    } catch (error) {
+      toast.error("Logout failed");
+    }
+  };
   /* -------------------- SEARCH LOGIC -------------------- */
   const debouncedSearch = useDebounce(searchQuery, 300);
 

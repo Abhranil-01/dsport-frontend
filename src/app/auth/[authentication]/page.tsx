@@ -114,9 +114,9 @@ export default function AuthPage() {
         email: userEmail,
         otp,
       }).unwrap();
-      console.log(response,"kejfhfhurfe");
-      console.log(response.data.accessToken,"accessToken");
-      console.log(response.data.refreshToken,"refreshToken");
+      // console.log(response,"kejfhfhurfe");
+      // console.log(response.data.accessToken,"accessToken");
+      // console.log(response.data.refreshToken,"refreshToken");
       // localStorage.setItem("accessToken", response.data.accessToken);
       // localStorage.setItem("refreshToken", response.data.refreshToken);
       // localStorage.setItem("loggedIn", "true");
