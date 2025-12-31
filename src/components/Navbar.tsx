@@ -105,10 +105,9 @@ export function Navbar() {
 
   const handleUserLogout = async () => {
     const res = await logout().unwrap();
-    refetch()
+    
     localStorage.removeItem("loggedIn");
     setIsLoggedIn(false);
-    toast.success("Logged out successfully");
   };
 
   /* -------------------- SEARCH LOGIC -------------------- */
