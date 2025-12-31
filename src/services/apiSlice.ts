@@ -1,7 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQueryWithReauth from "./baseQueryWithReauth";
-import { get } from "http";
-import { create } from "domain";
 
 
 interface GetSubCategoriesArg {
@@ -71,14 +69,13 @@ export const apiSlice = createApi({
       }),
       providesTags: ["User"],
     }),
-logout: builder.mutation<void, void>({
-  query: () => ({
-    url: "users/logout",
-    method: "POST",
-  }),
-  invalidatesTags: ["User"],
-}),
-
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "users/logout",
+        method: "POST",
+      }),
+      invalidatesTags: ["User", "Cart", "Order", "Address", "Review"],
+    }),
 
     getCategories: builder.query<any, void>({
       query: () => ({
@@ -202,7 +199,7 @@ logout: builder.mutation<void, void>({
         url: "cart/get-cart-items",
         method: "GET",
       }),
-      providesTags: ["Cart", "Order","User"],
+      providesTags: ["Cart", "Order", "User"],
     }),
     getCharges: builder.query<any, void>({
       query: () => ({

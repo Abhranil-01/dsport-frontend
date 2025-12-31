@@ -38,6 +38,7 @@ import {
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 /* -------------------- DEBOUNCE HOOK -------------------- */
 function useDebounce<T>(value: T, delay = 300): T {
@@ -93,24 +94,19 @@ export function Navbar() {
   useEffect(() => {
     if (user?.loggedIn) {
       localStorage.setItem("loggedIn", "true");
-    
+
       setIsLoggedIn(true);
     } else {
       localStorage.removeItem("loggedIn");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
       setIsLoggedIn(false);
     }
   }, [user]);
 
   const handleUserLogout = async () => {
     const res = await logout().unwrap();
-    console.log(res);
-    
     localStorage.removeItem("loggedIn");
-    localStorage.removeItem("accesstoken");
-    localStorage.removeItem("refreshtoken");
     setIsLoggedIn(false);
+    toast.success("Logged out successfully");
   };
 
   /* -------------------- SEARCH LOGIC -------------------- */
