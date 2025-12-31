@@ -105,6 +105,7 @@ export function Navbar() {
 
   const handleUserLogout = async () => {
     const res = await logout().unwrap();
+    console.log(res);
     
     localStorage.removeItem("loggedIn");
     setIsLoggedIn(false);
