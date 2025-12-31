@@ -348,7 +348,7 @@ export function Navbar() {
                   <Button variant="ghost" size="icon" className="relative">
                     <ShoppingCart className="h-4 w-4" />
 
-                    {cartData?.data?.length > 0 && (
+                    {cartData?.data?.length > 0 && isLoggedIn && (
                       <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
                         {cartData.data.length}
                       </span>
