@@ -109,6 +109,8 @@ export function Navbar() {
     
     localStorage.removeItem("loggedIn");
     setIsLoggedIn(false);
+    toast.success("Logged out successfully");
+    
   };
 
   /* -------------------- SEARCH LOGIC -------------------- */
