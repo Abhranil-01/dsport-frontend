@@ -91,6 +91,8 @@ export default function ProductPage() {
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Please Login to add to cart");
+      console.log(error,"when add to cart");
+      
     }
   };
 

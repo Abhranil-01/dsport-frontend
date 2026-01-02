@@ -180,12 +180,12 @@ export function Navbar() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-8">
-              <a href="/" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                  <Home className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold">SportZone</span>
-              </a>
+              <Link href="/" className="flex items-center gap-2">
+                {/* <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                 <Image src="/image/logo.png" alt="Logo" width={50} height={52} className="bg-white" />
+                </div> */}
+                <span className="text-2xl font-bold">Dsport</span>
+              </Link>
             </div>
 
             {/* Search */}

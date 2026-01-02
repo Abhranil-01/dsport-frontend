@@ -56,6 +56,7 @@ export default function Page() {
   } = useGetAddressByIdQuery(addressId || selectedAddressId, {
     skip: !addressId && !selectedAddressId,
   });
+  console.log(isAddressError, "jij");
 
   const { data: address } = useGetAllAddressQuery();
 
@@ -117,7 +118,7 @@ export default function Page() {
       amount: order.amount,
       currency: order.currency,
       order_id: order.id,
-      name: "SportZone",
+      name: "Dsport",
       description: "Order Payment",
       handler: verifyPaymentAndCreateOrder,
       theme: { color: "#3399cc" },
@@ -145,6 +146,7 @@ export default function Page() {
       setIsProcessing(false);
     }
   };
+  console.log(selectedAddressId, addressById, "ashfhfhjfhn");
 
   /* -------------------- UI -------------------- */
 
@@ -205,26 +207,85 @@ export default function Page() {
                   <Skeleton className="h-4 w-64 bg-gray-400" />
                 </div>
               )}
+              {selectedAddressId === null &&
+                addressId === null &&
+                addressById === undefined && (
+                  <div className="mt-6 rounded-2xl border border-dashed bg-gray-50 p-6 text-center shadow-sm">
+                    <MapPinHouse className="mx-auto mb-3 h-8 w-8 text-gray-500" />
 
-              {isAddressError && (
-                <p className="text-red-600 mt-4">Failed to load address</p>
-              )}
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      No delivery address added
+                    </h3>
+
+                    <p className="mt-1 text-sm text-gray-600">
+                      Please add a delivery address to continue with your order
+                    </p>
+
+                    <Button
+                      onClick={() => setIsAddressFormOpen(true)}
+                      className="mt-4 rounded-xl px-6"
+                    >
+                      Add New Address
+                    </Button>
+                  </div>
+                )}
+
+              {isAddressError &&
+                selectedAddressId !== null &&
+                addressId !== null && (
+                  <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-center shadow-sm">
+                    <p className="font-medium text-red-700">
+                      Failed to load address
+                    </p>
+                    <p className="mt-1 text-sm text-red-600">
+                      Please try again or select another address
+                    </p>
+                  </div>
+                )}
 
               {addressById?.data && (
-                <div className="border p-4 mt-4 rounded-xl shadow">
-                  <div className="flex gap-1 text-gray-600">
-                    <MapPinHouse />
-                    <p className="font-bold">{addressById.data.addressName}</p>
-                  </div>
-                  <p>{addressById.data.name}</p>
-                  <p>{addressById.data.address}</p>
-                  <p>
-                    {addressById.data.city}, {addressById.data.state}
-                  </p>
-                  <p>Phone: {addressById.data.phone}</p>
+                <div className="mt-4 rounded-2xl border border-gray-300 bg-white p-6 shadow-md hover:shadow-lg transition-shadow">
+                  {/* Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <MapPinHouse className="text-primary" />
+                      <h3 className="text-lg font-semibold">
+                        {addressById.data.addressName}
+                      </h3>
+                    </div>
 
+                    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+                      Default
+                    </span>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="my-3 h-px bg-gray-200" />
+
+                  {/* Address Details */}
+                  <div className="space-y-1 text-sm text-gray-700">
+                    <p className="font-medium text-gray-900">
+                      {addressById.data.name}
+                    </p>
+
+                    <p className="leading-relaxed">
+                      {addressById.data.address}
+                    </p>
+
+                    <p>
+                      {addressById.data.city},{" "}
+                      <span className="font-medium">
+                        {addressById.data.state}
+                      </span>
+                    </p>
+
+                    <p className="text-gray-600">📞 {addressById.data.phone}</p>
+                  </div>
+
+                  {/* Action */}
                   <Button
-                    className="mt-2"
+                    variant="outline"
+                    className="mt-4 w-full rounded-xl"
                     onClick={() => setIsAddressContainerOpen(true)}
                   >
                     Change Address
