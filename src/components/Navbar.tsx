@@ -34,7 +34,7 @@ import {
   useLogoutMutation,
   useGetSubCategoriesQuery,
   useGetCartItemsQuery,
-  apiSlice
+  apiSlice,
 } from "@/services/apiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -56,7 +56,7 @@ function useDebounce<T>(value: T, delay = 300): T {
 export function Navbar() {
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
- const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddressContainerOpen, setIsAddressContainerOpen] = useState(false);
@@ -85,6 +85,12 @@ export function Navbar() {
   const { data: cartData } = useGetCartItemsQuery(undefined, {
     skip: !isLoggedIn, // ✅ DO NOT FETCH CART WHEN LOGGED OUT
   });
+  const totalCartItems = Array.isArray(cartData?.data)
+    ? cartData.data.reduce(
+        (total: any, item: any) => total + (item.quantity || 0),
+        0
+      )
+    : 0;
 
   console.log(cartData?.data?.length);
   /* -------------------- AUTH -------------------- */
@@ -148,7 +154,6 @@ export function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
 
   /* -------------------- NAVIGATION -------------------- */
   const goToSubCategory = (item: any) => {
@@ -348,9 +353,9 @@ export function Navbar() {
                   <Button variant="ghost" size="icon" className="relative">
                     <ShoppingCart className="h-4 w-4" />
 
-                    {cartData?.data?.length > 0 && isLoggedIn && (
+                    {totalCartItems > 0 && isLoggedIn && (
                       <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
-                        {cartData.data.length}
+                        {totalCartItems}
                       </span>
                     )}
                   </Button>
