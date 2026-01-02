@@ -92,7 +92,7 @@ export default function Page() {
         cartItemIds: cartItems?.data?.map((i: any) => i._id),
       }).unwrap();
 
-      router.push(`/orders/${res?.data?._id}`);
+      router.push(`/orders`);
     } catch (error) {
       console.error(error);
       setIsProcessing(false);

@@ -28,6 +28,7 @@ function OrderCard({ order }: any) {
   );
 
 
+
   /* ================= CANCEL HANDLER ================= */
   const handleCancelConfirm = async () => {
     if (!cancelOrderId) return;
@@ -126,7 +127,7 @@ console.log(order,"ijo");
                 className="flex items-center gap-3 border-b pb-2 last:border-none"
               >
                 <Image
-                  src={item.coverImages[0].url}
+                  src={item.coverImages[0]?.url}
                   alt={item.productColorItem?.productColorName}
                   width={55}
                   height={55}
