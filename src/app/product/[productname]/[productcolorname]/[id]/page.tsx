@@ -55,10 +55,7 @@ export default function ProductPage() {
     }
   }, [product]);
 
-  if (isLoading)
-    return (
-<ProductPageSkeleton/>
-    );
+  if (isLoading) return <ProductPageSkeleton />;
 
   if (isError || !product) return <div>Product Not Found</div>;
 
@@ -91,8 +88,7 @@ export default function ProductPage() {
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Please Login to add to cart");
-      console.log(error,"when add to cart");
-      
+      console.log(error, "when add to cart");
     }
   };
 
@@ -121,144 +117,153 @@ export default function ProductPage() {
     acc[star] = reviews.filter((r: any) => r.rating === star).length;
     return acc;
   }, {});
-const renderStars = (rating: number) => {
-  const totalStars = 5;
+  const renderStars = (rating: number) => {
+    const totalStars = 5;
 
-  return Array.from({ length: totalStars }).map((_, i) => {
-    const starNumber = i + 1;
-    const fillPercent =
-      starNumber <= rating
-        ? 100 // full star
-        : starNumber - rating < 1
-        ? (rating % 1) * 100 // partial star
-        : 0; // empty star
+    return Array.from({ length: totalStars }).map((_, i) => {
+      const starNumber = i + 1;
+      const fillPercent =
+        starNumber <= rating
+          ? 100 // full star
+          : starNumber - rating < 1
+          ? (rating % 1) * 100 // partial star
+          : 0; // empty star
 
-    return (
-      <span key={i} className="relative inline-block w-4 h-4">
-        {/* Gray Star */}
-        <Star className="absolute w-4 h-4 text-gray-300 fill-gray-300" />
+      return (
+        <span key={i} className="relative inline-block w-4 h-4">
+          {/* Gray Star */}
+          <Star className="absolute w-4 h-4 text-gray-300 fill-gray-300" />
 
-        {/* Yellow Star clipped by fillPercent */}
-        <Star
-          className="absolute w-4 h-4 text-yellow-400 fill-yellow-400"
-          style={{ clipPath: `inset(0 ${100 - fillPercent}% 0 0)` }}
-        />
-      </span>
-    );
-  });
-};
-
-
-
-
+          {/* Yellow Star clipped by fillPercent */}
+          <Star
+            className="absolute w-4 h-4 text-yellow-400 fill-yellow-400"
+            style={{ clipPath: `inset(0 ${100 - fillPercent}% 0 0)` }}
+          />
+        </span>
+      );
+    });
+  };
+  const slugify = (value: string) =>
+    value.trim().toLowerCase().replaceAll("/", ",").replace(/\s+/g, "-");
 
   return (
-    <div className="min-h-screen py-10 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* LEFT IMAGES */}
-        <div className="flex flex-col-reverse lg:flex-row gap-4">
-          <div className="flex lg:flex-col gap-3">
-            {product?.images.map((img: any, index: number) => (
-              <button
-                key={img._id}
-                onClick={() => setSelectedImage(index)}
-                className={`w-20 h-20 rounded-xl border overflow-hidden transition ${
-                  selectedImage === index
-                    ? "border-black shadow-md"
-                    : "border-gray-300"
-                }`}
-              >
-                <Image
-                  src={img.url}
-                  alt="thumbnail"
-                  width={90}
-                  height={90}
-                  className="object-cover w-full h-full"
-                />
-              </button>
-            ))}
-          </div>
+ <div className="min-h-screen bg-linear-to-b from-gray-50 to-white pb-20">
+      {/* ================= PRODUCT ================= */}
+      <div className="max-w-7xl mx-auto px-4 pt-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* ================= LEFT : IMAGES ================= */}
+        <div className="rounded-2xl p-4 sm:p-6">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* ================= THUMBNAILS ================= */}
+            <div className="flex lg:flex-col gap-3 lg:w-20 overflow-x-auto lg:overflow-visible items-center lg:items-start">
+              {product?.images.map((img:any, index:any) => (
+                <Button
+                  key={img._id}
+                  onClick={() => setSelectedImage(index)}
+                  className={`relative shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded-xl overflow-hidden border p-0 transition-all duration-200 ${
+                    selectedImage === index
+                      ? "border-black ring-2 ring-black/30 scale-105"
+                      : "border-gray-300 hover:border-gray-500"
+                  }`}
+                >
+                  <Image
+                    src={img.url}
+                    alt="thumbnail"
+                    fill
+                    className="object-cover"
+                  />
+                </Button>
+              ))}
+            </div>
 
-          <div className="rounded-2xl overflow-hidden shadow-lg w-full">
-            <Image
-              src={product?.images[selectedImage]?.url}
-              alt=""
-              width={600}
-              height={600}
-              className="w-full h-full object-cover"
-            />
+            {/* ================= MAIN IMAGE ================= */}
+            <div className="w-full flex justify-center">
+              <div className="relative aspect-square w-full max-w-[420px] overflow-hidden rounded-xl group">
+                <Image
+                  src={product?.images[selectedImage]?.url}
+                  alt="product image"
+                  fill
+                  priority
+                  className="object-contain transition-transform duration-300 group-hover:scale-150 cursor-zoom-in"
+                />
+
+                {/* Mobile Zoom Hint */}
+                <div className="absolute bottom-3 right-3 text-xs bg-black/70 text-white px-3 py-1 rounded-full lg:hidden">
+                  Tap to zoom
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* RIGHT PRODUCT DETAILS */}
-        <div>
-          <h1 className="font-bold text-gray-600">{product?.productName}</h1>
-          <h2 className="text-xl font-bold mb-4">
-            {product?.productColorName}
-          </h2>
-
-          {/* STAR RATING */}
-<div className="flex items-center gap-4 mb-6">
-  {/* ⭐ Star Rating + Numeric */}
-  <div className="flex items-center ">
-    {renderStars(avgRating)}
-    <span className="text-lg font-semibold text-gray-700">
-      {avgRating.toFixed(1)}
-    </span>
-  </div>
-
-  {/* Ratings & Reviews Count */}
-  <div className="text-gray-500 text-sm flex gap-1 items-center">
-    <span>{totalRatings} Ratings</span>
-    <span>|</span>
-    <span>{totalReviews} Reviews</span>
-  </div>
-</div>
-
-
-
-          {/* DESCRIPTION */}
-          <p className="text-gray-700 mb-6">{product.productDescription}</p>
-
-          {/* PRICE */}
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-4xl font-bold">
-              ₹{showPrices.offerprice.toLocaleString("en-IN")}
+        {/* ================= RIGHT : DETAILS ================= */}
+        <div className="space-y-7">
+          {/* Title */}
+          <div>
+            <h1 className="text-xs uppercase tracking-wide text-gray-500">
+              {product?.productName}
+            </h1>
+            <h2 className="text-2xl font-bold text-gray-900 mt-1">
+              {product?.productColorName}
             </h2>
-            <span className="line-through text-gray-500">
-              ₹{showPrices.actualprice.toLocaleString("en-IN")}
-            </span>
-            <span className="text-green-600 font-semibold">
-              {showPrices.percentage}% Off
+          </div>
+
+          {/* Rating */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 bg-green-50 px-3 py-1 rounded-full">
+              {renderStars(avgRating)}
+              <span className="text-sm font-semibold text-green-700">
+                {avgRating.toFixed(1)}
+              </span>
+            </div>
+            <span className="text-sm text-gray-500">
+              {totalRatings} Ratings • {totalReviews} Reviews
             </span>
           </div>
 
-          {/* COLORS */}
-          <div className="mb-8">
-            <h3 className="font-medium mb-2">Color</h3>
-            <div className="flex gap-4">
+          {/* Description */}
+          <p className="text-gray-600 leading-relaxed">
+            {product?.productDescription}
+          </p>
+
+          {/* Price */}
+          <div className="flex items-end gap-4">
+            <h2 className="text-4xl font-extrabold text-gray-900">
+              ₹{showPrices.offerprice.toLocaleString("en-IN")}
+            </h2>
+            <div>
+              <p className="line-through text-gray-400 text-sm">
+                ₹{showPrices.actualprice.toLocaleString("en-IN")}
+              </p>
+              <p className="text-green-600 font-semibold text-sm">
+                {showPrices.percentage}% OFF
+              </p>
+            </div>
+          </div>
+
+          {/* Colors */}
+          <div>
+            <h3 className="font-medium mb-3">Color</h3>
+            <div className="flex gap-4 flex-wrap">
               {productMain?.data?.colors.map((color: any) => {
-                const colorOut = isColorOutOfStock(color);
+                const out = isColorOutOfStock(color);
 
                 return (
                   <div key={color._id} className="text-center">
                     <Button
+                      disabled={out}
                       onClick={() =>
-                        !colorOut &&
+                        !out &&
                         router.push(
-                          `/product/${
-                            productMain?.data?.productName
-                          }/${color.productColorName.replaceAll(" ", "")}/${
-                            color._id
-                          }`
+                          `/product/${productMain.data.productName}/${slugify(
+                            color.productColorName
+                          )}/${color._id}`
                         )
                       }
-                      disabled={colorOut}
-                      className={`w-20 h-20 p-0 border rounded-none overflow-hidden ${
-                        colorOut
+                      className={`w-20 h-20 p-0 rounded-xl border overflow-hidden transition ${
+                        out
                           ? "opacity-40 cursor-not-allowed"
                           : product?._id === color._id
-                          ? "border-black shadow-md"
+                          ? "border-black ring-2 ring-black/30 scale-105"
                           : "border-gray-300 hover:border-gray-500"
                       }`}
                     >
@@ -273,10 +278,10 @@ const renderStars = (rating: number) => {
 
                     <p
                       className={`text-xs mt-1 ${
-                        colorOut ? "text-red-600" : "text-green-600"
+                        out ? "text-red-600" : "text-green-600"
                       }`}
                     >
-                      {colorOut ? "Out of Stock" : "In Stock"}
+                      {out ? "Out of Stock" : "In Stock"}
                     </p>
                   </div>
                 );
@@ -284,53 +289,43 @@ const renderStars = (rating: number) => {
             </div>
           </div>
 
-          {/* SIZES */}
-          <div className="mb-8">
-            <h3 className="font-medium mb-2">Sizes</h3>
-            <div className="flex gap-3">
+          {/* Sizes */}
+          <div>
+            <h3 className="font-medium mb-3">Size</h3>
+            <div className="flex gap-3 flex-wrap">
               {product?.sizes.map((size: any) => {
-                const isOut = size.stock === 0;
-                const isLow = size.stock <= 10 && size.stock > 0;
+                const out = size.stock === 0;
+                const low = size.stock > 0 && size.stock <= 10;
 
                 return (
                   <div key={size._id} className="flex flex-col">
                     <button
-                      onClick={() => {
-                        if (!isOut) {
-                          setShowPrices({
-                            id: size._id,
-                            actualprice: size.actualPrice,
-                            offerprice: size.offerPrice,
-                            percentage: size.offerPercentage,
-                          });
-                          setSelectedSize(size._id);
-                        }
-                      }}
-                      disabled={isOut}
-                      className={`px-4 py-2 rounded-lg border w-fit text-sm ${
-                        isOut
-                          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      disabled={out}
+                      onClick={() => !out && setSelectedSize(size._id)}
+                      className={`px-5 py-2 rounded-full border text-sm font-medium transition ${
+                        out
+                          ? "bg-gray-200 text-gray-400"
                           : selectedSize === size._id
                           ? "bg-black text-white"
-                          : "border-gray-300 hover:border-gray-500"
+                          : "border-gray-300 hover:bg-gray-100"
                       }`}
                     >
                       {size.size}
                     </button>
 
                     <span
-                      className={`text-xs ml-1 ${
-                        isOut
+                      className={`text-xs mt-1 ${
+                        out
                           ? "text-red-600"
-                          : isLow
+                          : low
                           ? "text-orange-600"
                           : "text-green-600"
                       }`}
                     >
-                      {isOut
+                      {out
                         ? "Out of Stock"
-                        : isLow
-                        ? `Only ${size.stock} left!`
+                        : low
+                        ? `Only ${size.stock} left`
                         : "In Stock"}
                     </span>
                   </div>
@@ -339,58 +334,47 @@ const renderStars = (rating: number) => {
             </div>
           </div>
 
-          {/* ADD TO CART */}
+          {/* CTA */}
           <Button
-            className="w-full py-5 text-lg rounded-xl"
-            disabled={isOutOfStock}
             onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className="w-full h-14 rounded-2xl text-lg bg-black hover:bg-gray-900 shadow-lg"
           >
             {isOutOfStock ? "Out of Stock" : "Add to Cart"}
           </Button>
         </div>
       </div>
 
+      {/* ================= REVIEWS ================= */}
+      <div className="max-w-5xl mx-auto mt-20 px-4">
+        <h2 className="text-2xl font-bold mb-6">Ratings & Reviews</h2>
 
-      <div className="max-w-5xl mx-auto mt-16 px-4">
-        <h2 className="text-2xl font-semibold mb-3">Ratings & Reviews</h2>
-
-        <div className="flex gap-10 items-start mb-6">
-          {/* LEFT AVG BOX */}
-          <div className="flex flex-col items-center p-4 border rounded-lg shadow-sm w-40">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
             <h1 className="text-4xl font-bold">{avgRating.toFixed(1)}</h1>
-
-            <div className="flex mt-1">
-              <div className="flex items-center mb-4">
-                {renderStars(avgRating)}
-                <span className="ml-2 text-gray-600">
-            
-                </span>
-              </div>
-            </div>
-
-            <p className="text-sm text-gray-500 mt-1">
+            <div className="mt-2">{renderStars(avgRating)}</div>
+            <p className="text-sm text-gray-500 mt-2">
               {totalRatings} Ratings & {totalReviews} Reviews
             </p>
           </div>
 
-          {/* RIGHT STAR DISTRIBUTION */}
-          <div className="flex flex-col gap-1 w-full max-w-sm">
+          <div className="bg-white rounded-2xl shadow-md p-6 space-y-3">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = starCounts[star] || 0;
-              const percent = totalRatings ? (count / totalRatings) * 100 : 0;
+              const percent = totalRatings
+                ? (count / totalRatings) * 100
+                : 0;
 
               return (
                 <div key={star} className="flex items-center gap-3">
-                  <span className="text-sm font-medium w-5">{star}★</span>
-
+                  <span className="w-8 text-sm font-medium">{star}★</span>
                   <div className="w-full h-2 bg-gray-200 rounded">
                     <div
-                      className="h-full bg-green-500 rounded"
+                      className="h-full bg-green-500 rounded transition-all"
                       style={{ width: `${percent}%` }}
-                    ></div>
+                    />
                   </div>
-
-                  <span className="text-sm text-gray-600 w-6 text-right">
+                  <span className="w-8 text-sm text-gray-600 text-right">
                     {count}
                   </span>
                 </div>
@@ -400,7 +384,7 @@ const renderStars = (rating: number) => {
         </div>
 
         <Separator className="mb-6" />
-<ReviewList reviews={reviews} />
+        <ReviewList reviews={reviews} />
       </div>
     </div>
   );
