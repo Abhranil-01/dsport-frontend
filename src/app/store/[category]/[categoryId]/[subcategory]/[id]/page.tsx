@@ -84,8 +84,9 @@ const subcategoryDisplay = displayName(subcategorySlug); // "Summer Collection"
     isError,
   } = useGetAllProductsColorWiseQuery(filters, {
     skip: !id,
+    refetchOnMountOrArgChange: true
   });
-console.log(products,"ohoho");
+
 const navigateToSubcategory=()=>{
   // const categoryName = category.categoryName.toLowerCase().trim().replace(/\s+/g, "-");
   router.push(`/${categorySlug}/${categoryId}`);

@@ -12,11 +12,10 @@ export const useProductSocket = () => {
     const onProductUpdate = (payload:any) => {
       if (!payload?.subcategoryId) return;
 
-      dispatch(
-        apiSlice.util.invalidateTags([
-          { type: "Product", id: payload.subcategoryId },
-        ])
-      );
+dispatch(
+  apiSlice.util.invalidateTags(["Product"])
+);
+
     };
 
     socket.on("PRODUCT_UPDATED", onProductUpdate);

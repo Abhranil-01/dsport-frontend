@@ -152,10 +152,7 @@ export const apiSlice = createApi({
         };
       },
 
-      providesTags: (r, e, arg) =>
-        arg?.subcategoryId
-          ? [{ type: "Product", id: arg.subcategoryId }]
-          : ["Product"],
+      providesTags:["Product"],
     }),
 
     getSingleProduct: builder.query<any, GetSingleProduct>({
