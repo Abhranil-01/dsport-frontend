@@ -86,6 +86,7 @@ const subcategoryDisplay = displayName(subcategorySlug); // "Summer Collection"
     skip: !id,
     refetchOnMountOrArgChange: true
   });
+console.log("products",products);
 
 const navigateToSubcategory=()=>{
   // const categoryName = category.categoryName.toLowerCase().trim().replace(/\s+/g, "-");

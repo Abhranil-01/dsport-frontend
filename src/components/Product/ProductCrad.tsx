@@ -26,26 +26,11 @@ import { useRouter } from "next/navigation";
 // };
 
 export default function ProductCard({ productDetails }: any) {
-  console.log(productDetails);
-  const [price, setPrice] = useState({
-    actualprice: 0,
-    offerprice: 0,
-    percentage: 0,
-  });
-  const router = useRouter();
-  useEffect(() => {
-    productDetails?.sizes.map((size: any) => {
-      console.log("kjohohu", size);
+  console.log("ijijiojoj",productDetails.sizes[0].offerPrice.toLocaleString());
 
-      if (size.defaultsize === true) {
-        setPrice({
-          actualprice: size.actualPrice,
-          offerprice: size.offerPrice,
-          percentage: size.offerPercentage,
-        });
-      }
-    });
-  }, []);
+  const router = useRouter();
+
+
     const slugify = (value: string) =>
     value.trim().toLowerCase().replaceAll("/", ",").replace(/\s+/g, "-");
   const handleNavigatetoSingleProductPage = () => {
@@ -114,13 +99,13 @@ export default function ProductCard({ productDetails }: any) {
 
     <div className="flex items-center gap-2 pt-1">
       <span className="text-base md:text-lg font-semibold text-gray-900">
-        ₹{price.offerprice.toLocaleString("en-IN")}
+        ₹{productDetails?.sizes[0]?.offerPrice?.toLocaleString()}
       </span>
       <span className="text-xs md:text-sm line-through text-gray-400">
-        ₹{price.actualprice.toLocaleString("en-IN")}
+        ₹{productDetails?.sizes[0]?.actualPrice?.toLocaleString()}
       </span>
       <span className="text-xs md:text-sm font-semibold text-green-600">
-        {price.percentage}% off
+        {productDetails?.sizes[0]?.offerPercentage}% off
       </span>
     </div>
   </CardContent>
