@@ -77,6 +77,7 @@ export default function Page() {
   const [createOrderOnline] = useCreateOrderOnlineMutation();
 
   /* -------------------- ORDER HANDLERS -------------------- */
+console.log("huhuo",selectedAddressId,addressById,addressId);
 
   const handleOrder = () => {
     if (!paymentMethod) return setWarning("Please select a payment method");
@@ -207,8 +208,8 @@ export default function Page() {
                   <Skeleton className="h-4 w-64 bg-gray-400" />
                 </div>
               )}
-              {selectedAddressId === null &&
-                addressId === null &&
+              {
+            
                 addressById === undefined && (
                   <div className="mt-6 rounded-2xl border border-dashed bg-gray-50 p-6 text-center shadow-sm">
                     <MapPinHouse className="mx-auto mb-3 h-8 w-8 text-gray-500" />

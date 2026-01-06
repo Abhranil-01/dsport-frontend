@@ -47,6 +47,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ handleClose }) => {
     { subcategoryId },
     { skip: !subcategoryId }
   );
+console.log("filter",data);
 
   /* ================= META ================= */
 
