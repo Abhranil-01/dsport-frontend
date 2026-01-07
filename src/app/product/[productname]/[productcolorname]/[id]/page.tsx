@@ -184,7 +184,7 @@ export default function ProductPage() {
               : "border-gray-300"
           }`}
         >
-          <Image src={img.url} alt="thumb" fill className="object-cover" />
+          <Image src={img.url} alt="thumb" fill loading="lazy" className="object-cover" />
         </Button>
       ))}
     </div>
