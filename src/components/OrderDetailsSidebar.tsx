@@ -20,8 +20,8 @@ console.log(order);
   if (!order) return null;
 
   const isCancelled =
-    order.orderStatus === "CANCELLED" ||
-    order.deliveryStatus === "CANCELLED";
+    order.orderStatus === "Cancelled" ||
+    order.deliveryStatus === "Cancelled";
 
   const cancellationDate = order.cancelledAt
     ? new Date(order.cancelledAt).toLocaleString("en-IN")
