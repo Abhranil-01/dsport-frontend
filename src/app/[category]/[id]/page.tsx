@@ -20,15 +20,18 @@ export default function SubcategoryPage() {
 
   const params = useParams();
   const { id } = params;
+const rawCategorySlug = Array.isArray(params.category)
+  ? params.category[0]
+  : params.category;
 
-  const categorySlug = Array.isArray(params.category)
-    ? params.category[0]
-    : params.category;
+const decodedCategorySlug = decodeURIComponent(rawCategorySlug || "");
 
-  const displayCategoryName = categorySlug
-    ?.split("-")
-    .map((word) => (word ? word[0].toUpperCase() + word.slice(1) : ""))
-    .join(" ");
+
+const displayCategoryName = decodedCategorySlug
+  .split("-")
+  .map(word => word ? word[0].toUpperCase() + word.slice(1) : "")
+  .join(" ");
+
 
   const {
     data: subcategories,

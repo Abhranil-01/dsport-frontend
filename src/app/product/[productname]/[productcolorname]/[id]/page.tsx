@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import ReviewList from "@/components/ReviewList";
 import ProductPageSkeleton from "@/components/Product/ProductPageSkeleton";
+import ImageZoomModal from "@/components/ZoomModal";
 
 export default function ProductPage() {
   const router = useRouter();
@@ -23,7 +24,25 @@ export default function ProductPage() {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
+ const [zoomOpen, setZoomOpen] = useState(false);
+  const touchStartX = useRef(0);
 
+  /* ---------- Swipe Logic ---------- */
+  const handleTouchStart = (e: any) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: any) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+
+    if (diff > 50 && selectedImage < product.images.length - 1) {
+      setSelectedImage((p) => p + 1);
+    }
+
+    if (diff < -50 && selectedImage > 0) {
+      setSelectedImage((p) => p - 1);
+    }
+  };
   const [showPrices, setShowPrices] = useState({
     id: "" as any,
     actualprice: "" as any,
@@ -147,53 +166,73 @@ export default function ProductPage() {
     value.trim().toLowerCase().replaceAll("/", ",").replace(/\s+/g, "-");
 
   return (
- <div className="min-h-screen bg-linear-to-b from-gray-50 to-white pb-20">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white pb-20">
       {/* ================= PRODUCT ================= */}
       <div className="max-w-7xl mx-auto px-4 pt-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* ================= LEFT : IMAGES ================= */}
-        <div className="rounded-2xl p-4 sm:p-6">
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* ================= THUMBNAILS ================= */}
-            <div className="flex lg:flex-col gap-3 lg:w-20 overflow-x-auto lg:overflow-visible items-center lg:items-start">
-              {product?.images.map((img:any, index:any) => (
-                <Button
-                  key={img._id}
-                  onClick={() => setSelectedImage(index)}
-                  className={`relative shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded-xl overflow-hidden border p-0 transition-all duration-200 ${
-                    selectedImage === index
-                      ? "border-black ring-2 ring-black/30 scale-105"
-                      : "border-gray-300 hover:border-gray-500"
-                  }`}
-                >
-                  <Image
-                    src={img.url}
-                    alt="thumbnail"
-                    fill
-                    className="object-cover"
-                  />
-                </Button>
-              ))}
-            </div>
+   <div className="rounded-2xl p-4 sm:p-6">
+  <div className="flex flex-col-reverse lg:flex-row gap-6">
+    {/* THUMBNAILS */}
+    <div className="flex gap-3 overflow-x-auto lg:flex-col lg:w-20 items-center justify-center">
+      {product?.images.map((img: any, index: number) => (
+        <Button
+          key={img._id}
+          onClick={() => setSelectedImage(index)}
+          className={`relative w-14 h-14 lg:w-16 lg:h-16 rounded-xl overflow-hidden border p-0 ${
+            selectedImage === index
+              ? "border-black ring-2 ring-black/30"
+              : "border-gray-300"
+          }`}
+        >
+          <Image src={img.url} alt="thumb" fill className="object-cover" />
+        </Button>
+      ))}
+    </div>
 
-            {/* ================= MAIN IMAGE ================= */}
-            <div className="w-full flex justify-center">
-              <div className="relative aspect-square w-full max-w-[420px] overflow-hidden rounded-xl group">
-                <Image
-                  src={product?.images[selectedImage]?.url}
-                  alt="product image"
-                  fill
-                  priority
-                  className="object-contain transition-transform duration-300 group-hover:scale-150 cursor-zoom-in"
-                />
-
-                {/* Mobile Zoom Hint */}
-                <div className="absolute bottom-3 right-3 text-xs bg-black/70 text-white px-3 py-1 rounded-full lg:hidden">
-                  Tap to zoom
-                </div>
-              </div>
+    {/* MAIN IMAGE */}
+    <div className="w-full flex justify-center">
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onClick={() => setZoomOpen(true)}
+        className="relative aspect-square w-full max-w-[420px] overflow-hidden rounded-xl cursor-zoom-in"
+      >
+        <div
+          className="flex transition-transform duration-300"
+          style={{ transform: `translateX(-${selectedImage * 100}%)` }}
+        >
+          {product?.images.map((img: any) => (
+            <div key={img._id} className="relative min-w-full aspect-square">
+              <Image
+                src={img.url}
+                alt="product"
+                loading="eager"
+                quality={90}
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
-          </div>
+          ))}
         </div>
+
+        {/* MOBILE HINT */}
+        <div className="absolute bottom-3 right-3 text-xs bg-black/70 text-white px-3 py-1 rounded-full lg:hidden">
+          Swipe • Tap to zoom
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{/* ZOOM MODAL */}
+{zoomOpen && (
+  <ImageZoomModal
+    images={product.images}
+    index={selectedImage}
+    onClose={() => setZoomOpen(false)}
+  />
+)}
 
         {/* ================= RIGHT : DETAILS ================= */}
         <div className="space-y-7">
@@ -361,9 +400,7 @@ export default function ProductPage() {
           <div className="bg-white rounded-2xl shadow-md p-6 space-y-3">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = starCounts[star] || 0;
-              const percent = totalRatings
-                ? (count / totalRatings) * 100
-                : 0;
+              const percent = totalRatings ? (count / totalRatings) * 100 : 0;
 
               return (
                 <div key={star} className="flex items-center gap-3">

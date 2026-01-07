@@ -33,8 +33,14 @@ const router=useRouter()
   const { category: categorySlugRaw, categoryId, subcategory: subcategorySlugRaw, id } = params ?? {};
 
 // Ensure they are strings (Next.js may give string[])
-const categorySlug = Array.isArray(categorySlugRaw) ? categorySlugRaw[0] : categorySlugRaw ?? "";
-const subcategorySlug = Array.isArray(subcategorySlugRaw) ? subcategorySlugRaw[0] : subcategorySlugRaw ?? "";
+const categorySlug = decodeURIComponent(
+  Array.isArray(categorySlugRaw) ? categorySlugRaw[0] : categorySlugRaw ?? ""
+);
+
+const subcategorySlug = decodeURIComponent(
+  Array.isArray(subcategorySlugRaw) ? subcategorySlugRaw[0] : subcategorySlugRaw ?? ""
+);
+
 
 // Convert slug to display name
 const displayName = (slug: string) =>
@@ -42,6 +48,7 @@ const displayName = (slug: string) =>
     .split("-")
     .map(word => word ? word[0].toUpperCase() + word.slice(1) : "")
     .join(" ");
+
 
 // Usage
 const categoryDisplay = displayName(categorySlug);      // "Bootas And Balls"
