@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import OrderDetailsSidebar from "@/components/OrderDetailsSidebar";
+import OrderDetailsSidebar from "@/components/Order/OrderDetailsSidebar";
 import ReviewSidebar from "@/components/ReviewSidebar";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -48,7 +48,7 @@ console.log(order,"ijo");
       {/* ================= ORDER DETAILS SIDEBAR ================= */}
       {selectedOrder && (
         <OrderDetailsSidebar
-          order={selectedOrder}
+          orderId={selectedOrder}
           onClose={() => setSelectedOrder(null)}
         />
       )}
@@ -218,7 +218,7 @@ console.log(order,"ijo");
               <Button
                 variant="outline"
                 className="text-sm"
-                onClick={() => setSelectedOrder(order)}
+                onClick={() => setSelectedOrder(order._id)}
               >
                 View Details
               </Button>

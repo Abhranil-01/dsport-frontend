@@ -291,13 +291,17 @@ export const apiSlice = createApi({
           : [{ type: "Order", id: "LIST" }],
     }),
 
-    getOrderById: builder.query<any, string>({
-      query: (id) => ({
-        url: `order/get-order-details/${id}`,
-        method: "GET",
-      }),
-      providesTags: ["Order", "Review"],
-    }),
+ getOrderById: builder.query<any, string>({
+  query: (id) => ({
+    url: `order/get-order-details/${id}`,
+    method: "GET",
+  }),
+  providesTags: (result, error, id) => [
+    { type: "Order", id },   // 🔥 THIS enables live refetch
+    { type: "Review", id },  // optional
+  ],
+}),
+
     cancleOrder: builder.mutation<any, { orderId: string }>({
       query: (data) => ({
         url: "order/cancel-order",

@@ -9,6 +9,7 @@ import StoreProvider from "@/providers/StoreProvider";
 import { FooterWrapper } from "@/components/FooterWrapper";
 import { ToastProvider } from "@/components/ToastProvider";
 import Script from "next/script"; // ✅ ADD THIS
+import SocketProvider from "@/providers/SocketProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,10 +41,12 @@ export default function RootLayout({
         />
 
         <StoreProvider>
+          <SocketProvider>
           <NavbarWrapper />
           <ToastProvider />
           {children}
           <FooterWrapper />
+          </SocketProvider>
         </StoreProvider>
       </body>
     </html>
