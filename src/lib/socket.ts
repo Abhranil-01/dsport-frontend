@@ -9,11 +9,3 @@ export const socket: Socket = io(SOCKET_URL, {
   autoConnect: true,
 });
 
-// Optional: events
-socket.on("connect", () => {
-  console.log("✅ Socket connected:", socket.id);
-});
-
-socket.on("disconnect", () => {
-  console.log("❌ Socket disconnected");
-});
