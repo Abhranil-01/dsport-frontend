@@ -30,7 +30,7 @@ export default function Home() {
       socket.off("CATEGORY_DELETED", invalidateCategories);
     };
   }, [dispatch]);
-console.log(categories);
+  console.log(categories);
 
   return (
     <main className="font-sans bg-linear-to-b from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:to-black">
@@ -44,9 +44,7 @@ console.log(categories);
         </h1>
 
         {isError && (
-          <p className="text-center text-red-500">
-            Failed to load categories
-          </p>
+          <p className="text-center text-red-500">Failed to load categories</p>
         )}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">

@@ -20,7 +20,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "../ui/textarea";
 import axios from "axios";
-import { useAddAddressMutation } from "@/services/apiSlice";
+import { useAddAddressMutation, useUpdateAddressMutation } from "@/services/apiSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setAddressId } from "@/services/stateManageSlice";
@@ -82,11 +82,11 @@ const dispatch=useDispatch()
   };
 
   const [addAddress] = useAddAddressMutation();
-  const [updateAddress] = useAddAddressMutation();
+  const [updateAddress] = useUpdateAddressMutation();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (address) {
-      const res = await updateAddress({ ...values, id: address._id });
+      const res = await updateAddress({addressData:values, id: address._id });
       if (res.data.success) {
         toast.success("Address updated successfully");
         dispatch(setAddressId(res.data.data._id));
@@ -160,7 +160,7 @@ const dispatch=useDispatch()
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input placeholder="John Doe" {...field} required/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -177,7 +177,7 @@ const dispatch=useDispatch()
                     <FormItem>
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="9876543210" {...field} />
+                        <Input placeholder="9876543210" {...field} required />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -191,7 +191,7 @@ const dispatch=useDispatch()
                     <FormItem>
                       <FormLabel>Alternate Phone (Optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Optional" {...field} />
+                        <Input placeholder="Optional" {...field}  />
                       </FormControl>
                     </FormItem>
                   )}
@@ -207,7 +207,7 @@ const dispatch=useDispatch()
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="example@gmail.com" {...field} />
+                        <Input placeholder="example@gmail.com" {...field} required />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -228,6 +228,7 @@ const dispatch=useDispatch()
                           placeholder="House no, road, area..."
                           className="h-25 resize-none"
                           {...field}
+                          required
                         />
                       </FormControl>
                       <FormMessage />

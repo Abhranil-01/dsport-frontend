@@ -9,14 +9,10 @@ export const useProductSocket = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const onProductUpdate = (payload:any) => {
-      if (!payload?.subcategoryId) return;
+const onProductUpdate = (payload: any) => {
+  dispatch(apiSlice.util.invalidateTags(["Product"]));
+};
 
-dispatch(
-  apiSlice.util.invalidateTags(["Product"])
-);
-
-    };
 
     socket.on("PRODUCT_UPDATED", onProductUpdate);
     socket.on("PRODUCT_CREATED", onProductUpdate);
