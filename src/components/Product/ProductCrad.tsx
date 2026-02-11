@@ -59,7 +59,7 @@ export default function ProductCard({ productDetails }: any) {
                   productDetails.averageRating >= 4 ? "#388e3c" : "#ff9f00",
               }}
             >
-              {productDetails.averageRating} ★
+              {productDetails.averageRating.toFixed(1)} ★
             </span>
             <span className="text-gray-600">
               ({productDetails.totalReviews})
