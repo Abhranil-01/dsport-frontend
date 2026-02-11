@@ -41,6 +41,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
 
+
 /* -------------------- DEBOUNCE HOOK -------------------- */
 function useDebounce<T>(value: T, delay = 300): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -264,7 +265,7 @@ export function Navbar() {
                     <span>WestBengal,India</span>
                   ) : addressById?.data ? (
                     <span>
-                      {addressById.data.state}, {addressById.data.pincode}
+                      {addressById.data.state}, {addressById.data.country}
                     </span>
                   ) : (
                     <span>No address selected</span>
